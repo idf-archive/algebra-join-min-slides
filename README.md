@@ -1,1 +1,1 @@
-# calculus-join-min-slides
+# algebra-join-min-slides
