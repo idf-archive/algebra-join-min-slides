@@ -64,12 +64,18 @@
         b3.title = "Twilight";\\
   \hfill \\
   \begin{tabular}{ c | c c }
-  & title & author \\
+  Book & title & author \\
   \hline
-   b1 & \textcolor{red}{d} & a \\
-   b2 & -         & a \\
-   b3 & "Twilight" & a \\
+   & \textcolor{red}{d} & a \\
+   & -         & a \\
+   & "Twilight" & a \\
   \end{tabular}
+  \begin{tabular}{ c | c}
+  answer & title \\
+  \hline
+   & \textcolor{red}{d}\\
+  \end{tabular}
+
   Can we map first row to any rows?
 \end{frame}
 
@@ -78,11 +84,16 @@
   What are all the books by the person who wrote "Twilight"?\\
   \hfill \\
   \begin{tabular}{ c | c c }
-  & title & author \\
+  Book & title & author \\
   \hline
-   b1 & \textcolor{red}{d} & a \\
-   b2 & -         & a \\
-   b3 & "Twilight" & a \\
+   & \textcolor{red}{d} & a \\
+   & -         & a \\
+   & "Twilight" & a \\
+  \end{tabular}
+  \begin{tabular}{ c | c}
+  answer & title \\
+  \hline
+   & \textcolor{red}{d}\\
   \end{tabular}
   \hfill \\
   Map second row to some row?
@@ -93,11 +104,17 @@
   What are all the books by the person who wrote "Twilight"?\\
   \hfill \\
   \begin{tabular}{ c | c c }
-  & title & author \\
+  Book & title & author \\
   \hline
    & \textcolor{red}{d} & a \\
    & "Twilight" & a \\
   \end{tabular}
+  \begin{tabular}{ c | c}
+  answer & title \\
+  \hline
+   & \textcolor{red}{d}\\
+  \end{tabular}
+  \hfill \\
   Map second row to some row?
 \end{frame}
 
@@ -105,16 +122,229 @@
   \frametitle{Example 1}
   What are all the books by the person who wrote "Twilight"?\\
   \begin{tabular}{ c | c c }
-  & title & author \\
+  Book & title & author \\
   \hline
    & \textcolor{red}{d} & a \\
    & "Twilight" & a \\
+  \end{tabular}
+  \begin{tabular}{ c | c}
+  answer & title \\
+  \hline
+   & \textcolor{red}{d}\\
   \end{tabular}
   \hfill \\
   SELECT b1.title\\
   FROM Book b1, Book b2\\
   WHERE b1.author = b2.author AND\\
         b2.title = "Twilight";\\
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 2}
+  SELECT t1.A, t2.B, t4.C\\
+  FROM R t1, R t2, R t3, R t4, R t5\\
+  WHERE t3.A=t4.A AND\\
+  t2.B=t3.B AND\\
+  t1.C=t2.C AND\\
+  t3.C=t5.C AND\\
+  t3.A=t5.A;\\
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 2}
+  SELECT t1.A, t2.B, t4.C\\
+  FROM R t1, R t2, R t3, R t4, R t5\\
+  WHERE t3.A=t4.A AND\\
+  t2.B=t3.B AND\\
+  t1.C=t2.C AND\\
+  t3.C=t5.C AND\\
+  t3.A=t5.A;\\
+  \begin{tabular}{ c | c c c}
+  R & A & B & C \\
+  \hline
+  & \textcolor{red}{a}  & -  & c1 \\
+  & -  & \textcolor{red}{b}  & c1 \\
+  & a1 & \textcolor{red}{b} & c2 \\
+  & a1 & - & \textcolor{red}{c} \\
+  & a1 & - & c2 \\
+  \end{tabular}
+  \begin{tabular}{ c | c c c}
+  answer & A & B & C \\
+  \hline
+   & \textcolor{red}{a}& \textcolor{red}{c}& \textcolor{red}{c}\\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 2}
+  \begin{tabular}{ c | c c c}
+  R & A & B & C \\
+  \hline
+  & \textcolor{red}{a}  & -  & c1 \\
+  & -  & \textcolor{red}{b}  & c1 \\
+  & a1 & \textcolor{red}{b} & c2 \\
+  & a1 & - & \textcolor{red}{c} \\
+  & a1 & - & c2 \\
+  \end{tabular}
+  \begin{tabular}{ c | c c c}
+  answer & A & B & C \\
+  \hline
+   & \textcolor{red}{a}& \textcolor{red}{b}& \textcolor{red}{c}\\
+  \end{tabular}
+  \hfill \\
+  Can we reduce any rows?
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 2}
+  \begin{tabular}{ c | c c c}
+  R & A & B & C \\
+  \hline
+  & \textcolor{red}{a}  & -  & c1 \\
+  & -  & \textcolor{red}{b}  & c1 \\
+  & a1 & \textcolor{red}{b} & c2 \\
+  & a1 & - & \textcolor{red}{c} \\
+  \end{tabular}
+  \begin{tabular}{ c | c c c}
+  answer & A & B & C \\
+  \hline
+   & \textcolor{red}{a}& \textcolor{red}{b}& \textcolor{red}{c}\\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 2}
+  \begin{tabular}{ c | c c c}
+  R & A & B & C \\
+  \hline
+  & \textcolor{red}{a}  & -  & c1 \\
+  & -  & \textcolor{red}{b}  & c1 \\
+  & a1 & \textcolor{red}{b} & - \\
+  & a1 & - & \textcolor{red}{c} \\
+  \end{tabular}
+  \begin{tabular}{ c | c c c}
+  answer & A & B & C \\
+  \hline
+   & \textcolor{red}{a}& \textcolor{red}{b}& \textcolor{red}{c}\\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}
+  \frametitle{How to Chase}
+  \begin{itemize}
+    \item For any dependency $X \rightarrow A$, if any tuple agrees on $X$ make them agree on $A$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 2}
+  Dependencies: $F = \{AC \rightarrow B, B \rightarrow C, C \rightarrow A \}$\\
+  \begin{tabular}{ c | c c c}
+  R & A & B & C \\
+  \hline
+  & \textcolor{red}{a}  & -  & c1 \\
+  & -  & \textcolor{red}{b}  & c1 \\
+  & a1 & \textcolor{red}{b} & - \\
+  & a1 & - & \textcolor{red}{c} \\
+  \end{tabular}
+  \begin{tabular}{ c | c c c}
+  answer & A & B & C \\
+  \hline
+   & \textcolor{red}{a}& \textcolor{red}{b}& \textcolor{red}{c}\\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 2}
+  Dependencies: $F = \{AC \rightarrow B, B \rightarrow C, C \rightarrow A \}$\\
+  Use $B \rightarrow C$\\
+  \begin{tabular}{ c | c c c}
+  R & A & B & C \\
+  \hline
+  & \textcolor{red}{a}  & -  & c1 \\
+  & -  & \textcolor{red}{b}  & c1 \\
+  & a1 & \textcolor{red}{b} & - \\
+  & a1 & - & \textcolor{red}{c} \\
+  \end{tabular}
+  \begin{tabular}{ c | c c c}
+  answer & A & B & C \\
+  \hline
+   & \textcolor{red}{a}& \textcolor{red}{b}& \textcolor{red}{c}\\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 2}
+  Dependencies: $F = \{AC \rightarrow B, B \rightarrow C, C \rightarrow A \}$\\
+  Use $C \rightarrow A$\\
+  \begin{tabular}{ c | c c c}
+  R & A & B & C \\
+  \hline
+  & \textcolor{red}{a}  & -  & c1 \\
+  & -  & \textcolor{red}{b}  & c1 \\
+  & a1 & \textcolor{red}{b} & c1 \\
+  & a1 & - & \textcolor{red}{c} \\
+  \end{tabular}
+  \begin{tabular}{ c | c c c}
+  answer & A & B & C \\
+  \hline
+   & \textcolor{red}{a}& \textcolor{red}{b}& \textcolor{red}{c}\\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 2}
+  Dependencies: $F = \{AC \rightarrow B, B \rightarrow C, C \rightarrow A \}$\\
+  Eliminate rows\\
+  \begin{tabular}{ c | c c c}
+  R & A & B & C \\
+  \hline
+  & \textcolor{red}{a}  & -  & c1 \\
+  & \textcolor{red}{a}  & \textcolor{red}{b}  & c1 \\
+  & \textcolor{red}{a}  & \textcolor{red}{b} & c1 \\
+  & \textcolor{red}{a}  & - & \textcolor{red}{c} \\
+  \end{tabular}
+  \begin{tabular}{ c | c c c}
+  answer & A & B & C \\
+  \hline
+   & \textcolor{red}{a}& \textcolor{red}{b}& \textcolor{red}{c}\\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 2}
+  Dependencies: $F = \{AC \rightarrow B, B \rightarrow C, C \rightarrow A \}$\\
+  Can we use any Dependencies?\\
+  \begin{tabular}{ c | c c c}
+  R & A & B & C \\
+  \hline
+  & \textcolor{red}{a}  & \textcolor{red}{b} & c1 \\
+  & \textcolor{red}{a}  & - & \textcolor{red}{c} \\
+  \end{tabular}
+  \begin{tabular}{ c | c c c}
+  answer & A & B & C \\
+  \hline
+   & \textcolor{red}{a}& \textcolor{red}{b}& \textcolor{red}{c}\\
+  \end{tabular}
+\end{frame}
+\begin{frame}
+  \frametitle{Example 2}
+  Dependencies: $F = \{AC \rightarrow B, B \rightarrow C, C \rightarrow A \}$\\
+  \begin{tabular}{ c | c c c}
+  R & A & B & C \\
+  \hline
+  & \textcolor{red}{a}  & \textcolor{red}{b} & - \\
+  & \textcolor{red}{a}  & - & \textcolor{red}{c} \\
+  \end{tabular}
+  \begin{tabular}{ c | c c c}
+  answer & A & B & C \\
+  \hline
+   & \textcolor{red}{a}& \textcolor{red}{b}& \textcolor{red}{c}\\
+  \end{tabular}
+  \hfill \\
+  SELECT r1.A, r1.B, r2.C\\
+  FROM R r1, R r2\\
+  WHERE r1.a = r2.a;\\
 \end{frame}
 
 \section{Reference}
