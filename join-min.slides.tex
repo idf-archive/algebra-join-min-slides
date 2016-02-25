@@ -14,60 +14,107 @@
 \usepackage[english]{babel}
 \usepackage{times}
 
-% You can add any graphics to every slide by following command:
-% \logo{\includegraphics{logo.eps}}
-
-% Uncomment this, if you want the table of contents before each subsection.
-% However, to edit slides in TeXWord avoiding this feature is good idea.
-% \AtBeginSubsection[]
-% {
-%   \begin{frame}<beamer>
-%     \frametitle{Outline}
-%     \tableofcontents[currentsection,currentsubsection]
-%   \end{frame}
-% }
-
-% If you wish to uncover everything in a step-wise fashion, uncomment
-% the following command:
-%\beamerdefaultoverlayspecification{<+->}
-
 \begin{document}
-
-% Title Data. We keep it after \begin{document}
-% to enable editing text in BaKoMa TeX Word.
 
 \title{Algebra and Join Minimization}
 \author{John Clara, Danyang Zhang}
 \date[WI 2016]{Winter 2016.}
 
-\subject{Algebra and Join Minimization} % Should be passed to PDF [YNI]
+\subject{Algebra and Join Minimization}
 
 \begin{frame}
   \titlepage
 \end{frame}
 
-\section{Relational Calculus Overview}
 \begin{frame}
-  \frametitle{Atoms}
+  \frametitle{How to Optimize Queries}
   \begin{itemize}
-  \item $t \in R$, where $t$ is a tuple variable, $R$ is a relation
-  \item $t(x) \Theta u(y)$, where $t, u$ are tuple variables, $x, y$ are the attributes. $\Theta$ is comparison operator ($<, \leq, =, \neq, \geq, >$).
-  \item $t(x) \Theta c$, where $c$ is a constant.
+    \item Perform different mappings to reduce rows
+    \item Answer variables cannot change
+    \item Constants cannot change
+    \item Everything else is fair game!
   \end{itemize}
 \end{frame}
 
+\section{Join Minimization}
 \begin{frame}
-  \frametitle{Formulae}
-  \begin{itemize}
-  \item An atom $P$ is a formula
-  \item $\neg P, P_1 \wedge P_2, P_1 \vee P_2$
-  \item $P_1 \rightarrow P_2$
-  \item $P(t)$ contains a free tuple $t$, and.
-  \begin{align*}
-  &\exists t \in R [P(t)]\\
-  &\forall t \in R [P(t)]
-  \end{align*}
-  \end{itemize}
+  \frametitle{Example 1}
+  What are all the books by the person who wrote "Twilight"?
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 1}
+  What are all the books by the person who wrote "Twilight"?\\
+  \hfill \\
+  SELECT b1.title\\
+  FROM Book b1, Book b2, Book b3\\
+  WHERE b1.author = b2.author AND\\
+        b3.author = b2.author AND\\
+        b3.title = "Twilight";\\
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 1}
+  What are all the books by the person who wrote "Twilight"?\\
+  \hfill \\
+  SELECT b1.title\\
+  FROM Book b1, Book b2, Book b3\\
+  WHERE b1.author = b2.author AND\\
+        b3.author = b2.author AND\\
+        b3.title = "Twilight";\\
+  \hfill \\
+  \begin{tabular}{ c | c c }
+  & title & author \\
+  \hline
+   b1 & \textcolor{red}{d} & a \\
+   b2 & -         & a \\
+   b3 & "Twilight" & a \\
+  \end{tabular}
+  Can we map first row to any rows?
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 1}
+  What are all the books by the person who wrote "Twilight"?\\
+  \hfill \\
+  \begin{tabular}{ c | c c }
+  & title & author \\
+  \hline
+   b1 & \textcolor{red}{d} & a \\
+   b2 & -         & a \\
+   b3 & "Twilight" & a \\
+  \end{tabular}
+  \hfill \\
+  Map second row to some row?
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 1}
+  What are all the books by the person who wrote "Twilight"?\\
+  \hfill \\
+  \begin{tabular}{ c | c c }
+  & title & author \\
+  \hline
+   & \textcolor{red}{d} & a \\
+   & "Twilight" & a \\
+  \end{tabular}
+  Map second row to some row?
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 1}
+  What are all the books by the person who wrote "Twilight"?\\
+  \begin{tabular}{ c | c c }
+  & title & author \\
+  \hline
+   & \textcolor{red}{d} & a \\
+   & "Twilight" & a \\
+  \end{tabular}
+  \hfill \\
+  SELECT b1.title\\
+  FROM Book b1, Book b2\\
+  WHERE b1.author = b2.author AND\\
+        b2.title = "Twilight";\\
 \end{frame}
 
 \section{Reference}
