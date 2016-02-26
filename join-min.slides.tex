@@ -30,8 +30,8 @@
   \frametitle{How to Optimize Queries}
   \begin{itemize}
     \item Perform different mappings to reduce rows
-    \item Answer variables cannot change
-    \item Constants cannot change
+    \item Answer variables cannot change (least degree of freedom)
+    \item Constants cannot change (least degree of freedom)
     \item Everything else is fair game!
   \end{itemize}
 \end{frame}
@@ -39,36 +39,41 @@
 \section{Join Minimization}
 \begin{frame}
   \frametitle{Example 1}
-  What are all the books by the person who wrote "Twilight"?
+  What are all the books by the person who wrote ``Twilight"?
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
+  \frametitle{Example 1}
+  What are all the books by the person who wrote ``Twilight"?\\
+  \hfill \\
+\begin{verbatim} 
+  SELECT b1.title
+  FROM Book b1, Book b2, Book b3
+  WHERE b1.author = b2.author AND
+        b3.author = b2.author AND
+        b3.title = "Twilight";
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]
   \frametitle{Example 1}
   What are all the books by the person who wrote "Twilight"?\\
   \hfill \\
-  SELECT b1.title\\
-  FROM Book b1, Book b2, Book b3\\
-  WHERE b1.author = b2.author AND\\
-        b3.author = b2.author AND\\
-        b3.title = "Twilight";\\
-\end{frame}
-
-\begin{frame}
-  \frametitle{Example 1}
-  What are all the books by the person who wrote "Twilight"?\\
-  \hfill \\
-  SELECT b1.title\\
-  FROM Book b1, Book b2, Book b3\\
-  WHERE b1.author = b2.author AND\\
-        b3.author = b2.author AND\\
-        b3.title = "Twilight";\\
+\begin{verbatim} 
+  SELECT b1.title
+  FROM Book b1, Book b2, Book b3
+  WHERE b1.author = b2.author AND
+        b3.author = b2.author AND
+        b3.title = "Twilight";
+\end{verbatim}
   \hfill \\
   \begin{tabular}{ c | c c }
   Book & title & author \\
   \hline
-   & \textcolor{red}{d} & a \\
-   & -         & a \\
-   & "Twilight" & a \\
+   b1 & \textcolor{red}{d} & a \\
+   b2 & -         & a \\
+   b3 & ``Twilight" & a \\
   \end{tabular}
   \begin{tabular}{ c | c}
   answer & title \\
@@ -86,9 +91,9 @@
   \begin{tabular}{ c | c c }
   Book & title & author \\
   \hline
-   & \textcolor{red}{d} & a \\
-   & -         & a \\
-   & "Twilight" & a \\
+   b1 & \textcolor{red}{d} & a \\
+   b2 & -         & a \\
+   b3 & ``Twilight" & a \\
   \end{tabular}
   \begin{tabular}{ c | c}
   answer & title \\
@@ -106,8 +111,8 @@
   \begin{tabular}{ c | c c }
   Book & title & author \\
   \hline
-   & \textcolor{red}{d} & a \\
-   & "Twilight" & a \\
+   b1 & \textcolor{red}{d} & a \\
+   b3 & ``Twilight" & a \\
   \end{tabular}
   \begin{tabular}{ c | c}
   answer & title \\
@@ -118,7 +123,7 @@
   Map second row to some row?
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Example 1}
   What are all the books by the person who wrote "Twilight"?\\
   \begin{tabular}{ c | c c }
@@ -133,45 +138,51 @@
    & \textcolor{red}{d}\\
   \end{tabular}
   \hfill \\
-  SELECT b1.title\\
-  FROM Book b1, Book b2\\
-  WHERE b1.author = b2.author AND\\
-        b2.title = "Twilight";\\
+\begin{verbatim}
+  SELECT b1.title
+  FROM Book b1, Book b2
+  WHERE b1.author = b2.author AND
+        b2.title = "Twilight";
+\end{verbatim}        
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Example 2}
-  SELECT t1.A, t2.B, t4.C\\
-  FROM R t1, R t2, R t3, R t4, R t5\\
-  WHERE t3.A=t4.A AND\\
-  t2.B=t3.B AND\\
-  t1.C=t2.C AND\\
-  t3.C=t5.C AND\\
-  t3.A=t5.A;\\
+\begin{verbatim}  
+SELECT t1.A, t2.B, t4.C
+FROM R t1, R t2, R t3, R t4, R t5
+WHERE t3.A=t4.A AND
+  t2.B=t3.B AND
+  t1.C=t2.C AND
+  t3.C=t5.C AND
+  t3.A=t5.A;
+\end{verbatim}  
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Example 2}
-  SELECT t1.A, t2.B, t4.C\\
-  FROM R t1, R t2, R t3, R t4, R t5\\
-  WHERE t3.A=t4.A AND\\
-  t2.B=t3.B AND\\
-  t1.C=t2.C AND\\
-  t3.C=t5.C AND\\
-  t3.A=t5.A;\\
+\begin{verbatim}  
+SELECT t1.A, t2.B, t4.C
+FROM R t1, R t2, R t3, R t4, R t5
+WHERE t3.A=t4.A AND
+  t2.B=t3.B AND
+  t1.C=t2.C AND
+  t3.C=t5.C AND
+  t3.A=t5.A;
+\end{verbatim} 
   \begin{tabular}{ c | c c c}
   R & A & B & C \\
   \hline
-  & \textcolor{red}{a}  & -  & c1 \\
-  & -  & \textcolor{red}{b}  & c1 \\
-  & a1 & \textcolor{red}{b} & c2 \\
-  & a1 & - & \textcolor{red}{c} \\
-  & a1 & - & c2 \\
+  t1 & \textcolor{red}{a}  & -  & c1 \\
+  t2 & -  & \textcolor{red}{b}  & c1 \\
+  t3 & a1 & \textcolor{red}{b} & c2 \\
+  t4 & a1 & - & \textcolor{red}{c} \\
+  t5 & a1 & - & c2 \\
   \end{tabular}
   \begin{tabular}{ c | c c c}
   answer & A & B & C \\
   \hline
-   & \textcolor{red}{a}& \textcolor{red}{c}& \textcolor{red}{c}\\
+   & \textcolor{red}{a}& \textcolor{red}{b}& \textcolor{red}{c}\\
   \end{tabular}
 \end{frame}
 
@@ -180,11 +191,11 @@
   \begin{tabular}{ c | c c c}
   R & A & B & C \\
   \hline
-  & \textcolor{red}{a}  & -  & c1 \\
-  & -  & \textcolor{red}{b}  & c1 \\
-  & a1 & \textcolor{red}{b} & c2 \\
-  & a1 & - & \textcolor{red}{c} \\
-  & a1 & - & c2 \\
+  t1 & \textcolor{red}{a}  & -  & c1 \\
+  t2 & -  & \textcolor{red}{b}  & c1 \\
+  t3 & a1 & \textcolor{red}{b} & c2 \\
+  t4 & a1 & - & \textcolor{red}{c} \\
+  t5 & a1 & - & c2 \\
   \end{tabular}
   \begin{tabular}{ c | c c c}
   answer & A & B & C \\
@@ -197,13 +208,15 @@
 
 \begin{frame}
   \frametitle{Example 2}
+  Reduce t5
+  
   \begin{tabular}{ c | c c c}
   R & A & B & C \\
   \hline
-  & \textcolor{red}{a}  & -  & c1 \\
-  & -  & \textcolor{red}{b}  & c1 \\
-  & a1 & \textcolor{red}{b} & c2 \\
-  & a1 & - & \textcolor{red}{c} \\
+  t1 & \textcolor{red}{a}  & -  & c1 \\
+  t2 & -  & \textcolor{red}{b}  & c1 \\
+  t3 & a1 & \textcolor{red}{b} & c2 \\
+  t4 & a1 & - & \textcolor{red}{c} \\
   \end{tabular}
   \begin{tabular}{ c | c c c}
   answer & A & B & C \\
@@ -214,13 +227,16 @@
 
 \begin{frame}
   \frametitle{Example 2}
+  
+  TODO reduce t2 to t3
+  
   \begin{tabular}{ c | c c c}
   R & A & B & C \\
   \hline
-  & \textcolor{red}{a}  & -  & c1 \\
-  & -  & \textcolor{red}{b}  & c1 \\
-  & a1 & \textcolor{red}{b} & - \\
-  & a1 & - & \textcolor{red}{c} \\
+  t1 & \textcolor{red}{a}  & -  & c1 \\
+  t2 & -  & \textcolor{red}{b}  & c1 \\
+  t3 & a1 & \textcolor{red}{b} & - \\
+  t4 & a1 & - & \textcolor{red}{c} \\
   \end{tabular}
   \begin{tabular}{ c | c c c}
   answer & A & B & C \\
@@ -231,9 +247,16 @@
 
 \begin{frame}
   \frametitle{How to Chase}
-  \begin{itemize}
-    \item For any dependency $X \rightarrow A$, if any tuple agrees on $X$ make them agree on $A$.
-  \end{itemize}
+  \begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=.80]{chase}}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+Degree of freedom (dof): $wildcard > nonanswer~var > answer~var = const$
+
+Trick: replace the one with higher dof with the lower dof.
 \end{frame}
 
 \begin{frame}
@@ -327,7 +350,7 @@
    & \textcolor{red}{a}& \textcolor{red}{b}& \textcolor{red}{c}\\
   \end{tabular}
 \end{frame}
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Example 2}
   Dependencies: $F = \{AC \rightarrow B, B \rightarrow C, C \rightarrow A \}$\\
   \begin{tabular}{ c | c c c}
@@ -342,9 +365,11 @@
    & \textcolor{red}{a}& \textcolor{red}{b}& \textcolor{red}{c}\\
   \end{tabular}
   \hfill \\
-  SELECT r1.A, r1.B, r2.C\\
-  FROM R r1, R r2\\
-  WHERE r1.a = r2.a;\\
+\begin{verbatim} 
+  SELECT r1.A, r1.B, r2.C
+  FROM R r1, R r2
+  WHERE r1.a = r2.a;
+\end{verbatim}  
 \end{frame}
 
 \section{Reference}
