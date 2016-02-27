@@ -27,12 +27,12 @@
   \titlepage
 \end{frame}
 \section{Relational Algebra}
+
 \begin{frame}
   \frametitle{Relational Algebra}
-  \begin{itemize}
-  Review on Relational Algebra
-  \end{itemize}
+ Review on Relational Algebra
 \end{frame}
+
 \begin{frame}
   \frametitle{Basic Relational Algebra}
   \begin{itemize}
@@ -148,10 +148,9 @@ Relational algebra
 \section{Join Minimization}
 \begin{frame}
   \frametitle{Join Minimization}
-  \begin{itemize}
   Join Minimization
-  \end{itemize}
 \end{frame}
+
 \begin{frame}
   \frametitle{How to Optimize Queries}
   Basic Rules:
@@ -385,13 +384,13 @@ WHERE t3.A=t4.A AND
   \end{tabular}
 \end{frame}
 
-\begin{frame}
-  \frametitle{How to Chase}
-  \begin{figure}[!htp]
-\centering
-\subfloat{\includegraphics[scale=.70]{chase}}
-\end{figure}
-\end{frame}
+%\begin{frame}
+%  \frametitle{How to Chase}
+%  \begin{figure}[!htp]
+%\centering
+%\subfloat{\includegraphics[scale=.70]{chase}}
+%\end{figure}
+%\end{frame}
 
 \begin{frame}
   \frametitle{Example 2}
@@ -772,6 +771,102 @@ S s1, S s2 WHERE
   answer & A & E \\
   \hline
    & $\alpha$& $\varepsilon$\\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 5}
+  $F = \{A \rightarrow B, BC \rightarrow A\}$\\
+
+  \begin{tabular}{ c | c c c c}
+  R & A & B & C & D\\
+  \hline
+  &a & - & c  & - \\
+  &a & b & -  & - \\
+  &- & b & c  & d \\
+  \end{tabular}
+
+  \begin{tabular}{ c | c c c c}
+  answer & A & B & C & D\\
+  \hline
+  & a & b & c  & d \\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 5}
+  Use $A \rightarrow B$\\
+  \hfill \\
+  $F = \{A \rightarrow B, BC \rightarrow A\}$\\
+  \begin{tabular}{ c | c c c c}
+  R & A & B & C & D\\
+  \hline
+  &a & b & c  & - \\
+  &a & b & -  & - \\
+  &- & b & c  & d \\
+  \end{tabular}
+
+  \begin{tabular}{ c | c c c c}
+  answer & A & B & C & D\\
+  \hline
+  & a & b & c  & d \\
+  \end{tabular}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 5}
+  Reduce rows\\
+  \hfill \\
+  $F = \{A \rightarrow B, BC \rightarrow A\}$\\
+  \begin{tabular}{ c | c c c c}
+  R & A & B & C & D\\
+  \hline
+  &a & b & c  & - \\
+  &- & b & c  & d \\
+  \end{tabular}
+
+  \begin{tabular}{ c | c c c c}
+  answer & A & B & C & D\\
+  \hline
+  & a & b & c  & d \\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 5}
+  Use $BC \rightarrow A$\\
+  \hfill \\
+  $F = \{A \rightarrow B, BC \rightarrow A\}$\\
+  \begin{tabular}{ c | c c c c}
+  R & A & B & C & D\\
+  \hline
+  &a & b & c  & - \\
+  &a & b & c  & d \\
+  \end{tabular}
+
+  \begin{tabular}{ c | c c c c}
+  answer & A & B & C & D\\
+  \hline
+  & a & b & c  & d \\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 5}
+  Reduce rows\\
+  \hfill \\
+  $F = \{A \rightarrow B, BC \rightarrow A\}$\\
+  \begin{tabular}{ c | c c c c}
+  R & A & B & C & D\\
+  \hline
+  &a & b & c  & d \\
+  \end{tabular}
+
+  \begin{tabular}{ c | c c c c}
+  answer & A & B & C & D\\
+  \hline
+  & a & b & c  & d \\
   \end{tabular}
 \end{frame}
 
