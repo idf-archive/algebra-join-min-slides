@@ -27,14 +27,22 @@
   \titlepage
 \end{frame}
 \section{Relational Algebra}
-\section{Relational Algebra}
 \begin{frame}
   \frametitle{Relational Algebra}
   \begin{itemize}
-  Relational Algebra
+  Review on Relational Algebra
   \end{itemize}
 \end{frame}
-
+\begin{frame}
+  \frametitle{Basic Relational Algebra}
+  \begin{itemize}
+  \item Selection: $\sigma_{a=C} R$
+  \item Projection: $\Pi_{a}R$
+  \item Rename: $\delta_{a_1 \rightarrow a_2}R$
+  \item Aggregation: $\gamma_{a, Fn(b)\rightarrow b'}R$
+  \item Binary operator: $\cup, \cap, \bowtie, \div, \times, -$
+  \end{itemize}
+\end{frame}
 \begin{frame}
 \frametitle{Example Schema}
 $S: $
@@ -46,7 +54,7 @@ $S: $
 
 $B: $
 \begin{tabular}{c|ccc}
-  boat & sname & bname * day\\
+  boat & sname & bname & day\\
   \hline
   \\
 \end{tabular}
@@ -67,9 +75,12 @@ List the sailors who have at least one reservation and only reserved red boats.
 \frametitle{Example}
 List the sailors who have at least one reservation and only reserved red boats.  
 
-$$
-\Pi_{sname} R - \Pi_{sname} ((\sigma_{color\neq 'red'} B) \bowtie R)
-$$
+\begin{align*}
+& \Pi_{sname} R - \\
+& \quad \Pi_{sname} ((\sigma_{color\neq 'red'} B) \bowtie R)
+\end{align*}
+
+
 \end{frame}
 
 \begin{frame}
@@ -97,6 +108,9 @@ List the sailor names who reserve every red boat (assuming there exists red boat
 \frametitle{Example}
 List the sailor names who reserve every red boat (assuming there exists red boats).
 
+$\forall$ corresponds to $\div$.
+
+
 $$
 \Pi_{sname} (R\div \sigma_{color='red'} B)
 $$
@@ -109,20 +123,25 @@ List the sailor names who reserve every red boat \st{(assuming there exists red 
 Hint: use two $-$. 
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Example}
-List the sailor names who reserve every red boat \st{(assuming there exists red boats)}.
-Hint: use two $-$. 
-
-TODO relational calculus. 
+SQL using NOT IN:
+\begin{verbatim}
+select sname from sailor
+where sname NOT IN (
+  select sname from sailor, boat b 
+  where b.color = ’red’ and sname NOT IN (
+    select sname from reservation
+    where bname = b.bname))
+\end{verbatim}
+Relational algebra
 \begin{align*}
 & \Pi_{sname} S - \\
-& \quad \Pi_{sname}(\Pi_{sname, boat}(\sigma_{color='red'} B \times S)-\\
-& \quad\quad \Pi_{sname, boat} \sigma_{color='red'} B \times R\\
-)
+& \quad \Pi_{sname}(\Pi_{sname, boat}(\sigma_{color='red'} B \bowtie S)-\\
+& \quad\quad \Pi_{sname, boat} (\sigma_{color='red'} B \bowtie R)\\
+&)
 \end{align*}
 \end{frame}
-
 
 \section{Join Minimization}
 \begin{frame}
@@ -133,17 +152,7 @@ TODO relational calculus.
 \end{frame}
 \begin{frame}
   \frametitle{How to Optimize Queries}
-  \begin{itemize}
-    \item Perform different mappings to reduce rows
-    \item Answer variables cannot map to others
-    \item Constants cannot map to others
-    \item Everything else is fair game!
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}
-  \frametitle{How to Optimize Queries}
+  Basic Rules:
   \begin{itemize}
     \item Perform different mappings to reduce rows
     \item Answer variables cannot map to others
@@ -360,13 +369,13 @@ WHERE t3.A=t4.A AND
   \end{tabular}
 \end{frame}
 
-%\begin{frame}
-%  \frametitle{How to Chase}
-%  \begin{figure}[!htp]
-%\centering
-%\subfloat{\includegraphics[scale=.80]{chase}}
-%\end{figure}
-%\end{frame}
+\begin{frame}
+  \frametitle{How to Chase}
+  \begin{figure}[!htp]
+\centering
+\subfloat{\includegraphics[scale=.70]{chase}}
+\end{figure}
+\end{frame}
 
 \begin{frame}
   \frametitle{Example 2}
@@ -481,18 +490,111 @@ WHERE t3.A=t4.A AND
 \end{verbatim}  
 \end{frame}
 
-
-\section{Reference}
 \begin{frame}[fragile]
-\frametitle{Reference}
-\begin{enumerate}
-\item ``\textit{Database Systems Concepts}'' by Silberschatz, Korth and Sudarshan, 6th edition, McGraw-Hill.
-\end{enumerate}
+  \frametitle{Example 3}
+  \begin{verbatim}
+SELECT t1.A, t2.B, t4.C
+FROM R t1, R t2, R t3, R t4
+  WHERE t2.C=5 AND t3.A=t4.A AND
+  t2.B=t3.B AND t1.C=t2.C AND
+  t4.A=8;
+  \end{verbatim}
+  
+  with functional dependencies:
+  $$
+  F=\{AC\rightarrow B, B\rightarrow C, C \rightarrow A\}.
+  $$
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example 3}
+    \begin{verbatim}
+SELECT t1.A, t2.B, t4.C
+FROM R t1, R t2, R t3, R t4
+  WHERE t2.C=5 AND t3.A=t4.A AND
+  t2.B=t3.B AND t1.C=t2.C AND
+  t4.A=8;
+\end{verbatim}
+  \begin{tabular}{ c | c c c}
+  R & A & B & C \\
+  \hline
+  t1 & $\alpha$ & -  & 5 \\
+  t2 & -  & $\beta$  & 5 \\
+  t3 & 8  & $\beta$ & - \\
+  t4 & 8  & - & $\gamma$ \\
+  \end{tabular}
+  \begin{tabular}{ c | c c c}
+  answer & A & B & C \\
+  \hline
+   & $\alpha$& $\beta$& $\gamma$\\
+  \end{tabular}
+   
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example 3}
+  $$
+  F=\{AC\rightarrow B, B\rightarrow C, C \rightarrow A\}.
+  $$
+  
+    \begin{tabular}{ c | c c c}
+  R & A & B & C \\
+  \hline
+  t1 & $\alpha$ & -  & 5 \\
+  t2 & -  & $\beta$  & 5 \\
+  t3 & 8  & $\beta$ & - \\
+  t4 & 8  & - & $\gamma$ \\
+  \end{tabular}
+  \begin{tabular}{ c | c c c}
+  answer & A & B & C \\
+  \hline
+   & $\alpha$& $\beta$& $\gamma$\\
+  \end{tabular}
+  
+  After Chase
+  
+  \begin{tabular}{ c | c c c}
+  R & A & B & C \\
+  \hline
+  t1 & $\alpha=8$ & -  & 5 \\
+  t2 & 8  & $\beta$  & 5 \\
+  t3 & 8  & $\beta$ & 5 \\
+  t4 & 8  & - & $\gamma$ \\
+  \end{tabular}
+  \begin{tabular}{ c | c c c}
+  answer & A & B & C \\
+  \hline
+   & $\alpha$& $\beta$& $\gamma$\\
+  \end{tabular}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example 3}
+  After join minimization:
+  
+  \begin{tabular}{ c | c c c}
+  R & A & B & C \\
+  \hline
+  t2 & 8  & $\beta$  & 5 \\
+  t4 & 8  & - & $\gamma$ \\
+  \end{tabular}
+  \begin{tabular}{ c | c c c}
+  answer & A & B & C \\
+  \hline
+   & $\alpha=8$& $\beta$& $\gamma$\\
+  \end{tabular}
+ 
+  The final SQL query:
+  \begin{verbatim}
+SELECT t2.A, t2.B, t4.C
+FROM R t2, R t4
+WHERE t2.A=8 AND t2.C=5 AND t4.A=8;  
+  \end{verbatim}
 \end{frame}
 
 
 \begin{frame}[fragile]
-  \frametitle{Example 3}
+  \frametitle{Example 4}
   Given the following pattern, minimize the pattern. 
 \begin{verbatim}
 SELECT t1.A, s1.E FROM R t1, R t2, R t3, R t4
@@ -524,7 +626,7 @@ S s1, S s2 WHERE
 \end{frame}
 
 \begin{frame}
-  \frametitle{Example 3}
+  \frametitle{Example 4}
 
   \begin{tabular}{ c | c c c}
   R & A & B & C \\
@@ -548,7 +650,7 @@ S s1, S s2 WHERE
 \end{frame}
 
 \begin{frame}
-  \frametitle{Example 3}
+  \frametitle{Example 4}
 
   \begin{tabular}{ c | c c c}
   R & A & B & C \\
@@ -572,7 +674,7 @@ S s1, S s2 WHERE
 
 
 \begin{frame}
-  \frametitle{Example 3}
+  \frametitle{Example 4}
 
   \begin{tabular}{ c | c c c}
   R & A & B & C \\
@@ -596,7 +698,7 @@ S s1, S s2 WHERE
 
 
 \begin{frame}
-  \frametitle{Example 3}
+  \frametitle{Example 4}
 
   \begin{tabular}{ c | c c c}
   R & A & B & C \\
@@ -618,7 +720,7 @@ S s1, S s2 WHERE
 \end{frame}
 
 \begin{frame}
-  \frametitle{Example 3}
+  \frametitle{Example 4}
 
   \begin{tabular}{ c | c c c}
   R & A & B & C \\
@@ -638,7 +740,7 @@ S s1, S s2 WHERE
   \end{tabular}
 \end{frame}
 \begin{frame}
-  \frametitle{Example 3}
+  \frametitle{Example 4}
 
   \begin{tabular}{ c | c c c}
   R & A & B & C \\
@@ -655,5 +757,14 @@ S s1, S s2 WHERE
   \hline
    & $\alpha$& $\varepsilon$\\
   \end{tabular}
+\end{frame}
+
+\section{Reference}
+\begin{frame}[fragile]
+\frametitle{Reference}
+\begin{enumerate}
+\item ``\textit{Database Systems Concepts}'' by Silberschatz, Korth and Sudarshan,
+6th edition, McGraw-Hill.
+\end{enumerate}
 \end{frame}
 \end{document}
