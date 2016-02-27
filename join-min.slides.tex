@@ -56,14 +56,14 @@ $S: $
 
 $B: $
 \begin{tabular}{c|ccc}
-  boat & sname & bname & day\\
+  reservation & sname & bname & day\\
   \hline
   \\
 \end{tabular}
 
 $R:$
 \begin{tabular}{c|ccc}
-  reservation & bname  & color & rating \\
+  boat & bname  & color & rating \\
   \hline
   \\
 \end{tabular}
@@ -139,8 +139,8 @@ where sname NOT IN (
 Relational algebra
 \begin{align*}
 & \Pi_{sname} S - \Pi_{sname}(\\
-& \quad \Pi_{sname, boat}(\sigma_{color='red'} B \bowtie S)-\\
-& \quad \Pi_{sname, boat} (\sigma_{color='red'} B \bowtie R)\\
+& \quad \Pi_{sname, bname}(\sigma_{color='red'} B \times S)-\\
+& \quad \Pi_{sname, bname} (\sigma_{color='red'} B \bowtie R)\\
 &)
 \end{align*}
 \end{frame}
@@ -572,7 +572,7 @@ FROM R t1, R t2, R t3, R t4
   \begin{tabular}{ c | c c c}
   R & A & B & C \\
   \hline
-  t1 & $\alpha=8$ & -  & 5 \\
+  t1 & $\alpha=8$ & $\beta$  & 5 \\
   t2 & 8  & $\beta$  & 5 \\
   t3 & 8  & $\beta$ & 5 \\
   t4 & 8  & - & $\gamma$ \\
