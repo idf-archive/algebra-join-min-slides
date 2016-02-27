@@ -45,6 +45,8 @@
 \end{frame}
 \begin{frame}
 \frametitle{Example Schema}
+Taken from SQL Lab Assignment 1.
+
 $S: $
 \begin{tabular}{c|cc}
   sailor & sname & rating \\
@@ -136,9 +138,9 @@ where sname NOT IN (
 \end{verbatim}
 Relational algebra
 \begin{align*}
-& \Pi_{sname} S - \\
-& \quad \Pi_{sname}(\Pi_{sname, boat}(\sigma_{color='red'} B \bowtie S)-\\
-& \quad\quad \Pi_{sname, boat} (\sigma_{color='red'} B \bowtie R)\\
+& \Pi_{sname} S - \Pi_{sname}(\\
+& \quad \Pi_{sname, boat}(\sigma_{color='red'} B \bowtie S)-\\
+& \quad \Pi_{sname, boat} (\sigma_{color='red'} B \bowtie R)\\
 &)
 \end{align*}
 \end{frame}
@@ -159,6 +161,20 @@ Relational algebra
     \item Constants cannot map to others
     \item Everything else is fair game!
   \end{itemize}
+Example:
+  
+  \begin{tabular}{ c | c c }
+  R & title & author \\
+  \hline
+  r1 & \textcolor{red}{t} & ``Bob" \\
+  r2 & a & - \\
+  r3 & a & b
+  \end{tabular}  
+  \begin{tabular}{c|c}
+  ans & title\\
+  \hline 
+  & \textcolor{red}{t} 
+  \end{tabular}
 \end{frame}
 
 \begin{frame}
@@ -182,7 +198,7 @@ Relational algebra
 
 \begin{frame}[fragile]
   \frametitle{Example 1}
-  What are all the books by the person who wrote "Twilight"?\\
+  What are all the books by the person who wrote ``Twilight"?\\
   \hfill \\
 \begin{verbatim} 
   SELECT b1.title
@@ -205,12 +221,12 @@ Relational algebra
    & \textcolor{red}{d}\\
   \end{tabular}
 
-  Can we map first row to any rows?
+  Can we map first row $b1$ to any rows?
 \end{frame}
 
 \begin{frame}
   \frametitle{Example 1}
-  What are all the books by the person who wrote "Twilight"?\\
+  What are all the books by the person who wrote ``Twilight"?\\
   \hfill \\
   \begin{tabular}{ c | c c }
   Book & title & author \\
@@ -225,12 +241,12 @@ Relational algebra
    & \textcolor{red}{d}\\
   \end{tabular}
   \hfill \\
-  Map second row to some row?
+  Map second $b2$ row to some row?
 \end{frame}
 
 \begin{frame}
   \frametitle{Example 1}
-  What are all the books by the person who wrote "Twilight"?\\
+  What are all the books by the person who wrote ``Twilight"?\\
   \hfill \\
   \begin{tabular}{ c | c c }
   Book & title & author \\
@@ -244,17 +260,17 @@ Relational algebra
    & \textcolor{red}{d}\\
   \end{tabular}
   \hfill \\
-  Map second row to some row?
+  Map $b3$ to some row?
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Example 1}
-  What are all the books by the person who wrote "Twilight"?\\
+  What are all the books by the person who wrote ``Twilight"?\\
   \begin{tabular}{ c | c c }
   Book & title & author \\
   \hline
-   & \textcolor{red}{d} & a \\
-   & "Twilight" & a \\
+  b1 & \textcolor{red}{d} & a \\
+  b3 & ``Twilight" & a \\
   \end{tabular}
   \begin{tabular}{ c | c}
   answer & title \\
@@ -264,9 +280,9 @@ Relational algebra
   \hfill \\
 \begin{verbatim}
   SELECT b1.title
-  FROM Book b1, Book b2
-  WHERE b1.author = b2.author AND
-        b2.title = "Twilight";
+  FROM Book b1, Book b3
+  WHERE b1.author = b3.author AND
+        b3.title = "Twilight";
 \end{verbatim}        
 \end{frame}
 
@@ -276,10 +292,10 @@ Relational algebra
 SELECT t1.A, t2.B, t4.C
 FROM R t1, R t2, R t3, R t4, R t5
 WHERE t3.A=t4.A AND
-  t2.B=t3.B AND
-  t1.C=t2.C AND
-  t3.C=t5.C AND
-  t3.A=t5.A;
+      t2.B=t3.B AND
+      t1.C=t2.C AND
+      t3.C=t5.C AND
+      t3.A=t5.A;
 \end{verbatim}  
 \end{frame}
 
@@ -289,10 +305,10 @@ WHERE t3.A=t4.A AND
 SELECT t1.A, t2.B, t4.C
 FROM R t1, R t2, R t3, R t4, R t5
 WHERE t3.A=t4.A AND
-  t2.B=t3.B AND
-  t1.C=t2.C AND
-  t3.C=t5.C AND
-  t3.A=t5.A;
+      t2.B=t3.B AND
+      t1.C=t2.C AND
+      t3.C=t5.C AND
+      t3.A=t5.A;
 \end{verbatim} 
   \begin{tabular}{ c | c c c}
   R & A & B & C \\
@@ -327,7 +343,7 @@ WHERE t3.A=t4.A AND
    & \textcolor{red}{a}& \textcolor{red}{b}& \textcolor{red}{c}\\
   \end{tabular}
   \hfill \\
-  Can we reduce any rows? Cannot map t2 to t3 due to t1. 
+  Can we reduce any rows?
 \end{frame}
 
 \begin{frame}
@@ -352,7 +368,7 @@ WHERE t3.A=t4.A AND
 \begin{frame}
   \frametitle{Example 2}
   
-  Can reduce t2 to t3 or t3 to t2?
+  Can reduce t2 to t3 or t3 to t2, considering t1 and t4?
   
   \begin{tabular}{ c | c c c}
   R & A & B & C \\
